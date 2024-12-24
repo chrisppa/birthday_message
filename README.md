@@ -48,3 +48,9 @@ export default tseslint.config({
   },
 })
 ```
+
+# How to run this code
+- clone the repo
+- npm install (install the dependencies)
+- npm run dev (run the app)
+ 

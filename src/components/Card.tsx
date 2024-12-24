@@ -1,3 +1,4 @@
+// App.tsx
 import { useEffect, useState, useRef } from "react";
 import Confetti from "react-confetti";
 import { motion } from "framer-motion";
@@ -5,10 +6,12 @@ import front from "../assets/file.jpeg";
 import back from "../assets/back.jpeg";
 import audiofile from "../assets/praise.mp3";
 
+// Types
 interface BalloonProps {
   delay: number;
 }
 
+// Balloon Component
 const Balloon: React.FC<BalloonProps> = ({ delay }) => (
   <motion.div
     className="absolute w-16 h-20"
@@ -35,6 +38,7 @@ const Balloon: React.FC<BalloonProps> = ({ delay }) => (
   </motion.div>
 );
 
+// TypewriterText Component
 const TypewriterText = ({
   text,
   onComplete,
@@ -65,18 +69,20 @@ const TypewriterText = ({
 
   return (
     <div className="relative inline-block">
-      <span className="font-handwriting">{displayText}</span>
+      <span className="font-handwriting text-base md:text-lg">{displayText}</span>
       {!isComplete && (
         <span className="inline-block ml-1 animate-bounce">✍️</span>
       )}
       {isComplete && (
-        <div className="mt-4 text-right font-serif italic text-2xl text-pink-600">
+        <div className="mt-4 text-right font-serif italic text-xl md:text-2xl text-pink-600">
           - Chris🤓
         </div>
       )}
     </div>
   );
 };
+
+// Main BirthdayCard Component
 const BirthdayCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMail, setIsMail] = useState(false);
@@ -118,7 +124,6 @@ const BirthdayCard = () => {
 
   useEffect(() => {
     if (isMail) {
-      // After mail animation completes, start return sequence
       const returnTimeout = setTimeout(() => {
         setIsReturning(true);
         setIsMail(false);
@@ -130,10 +135,8 @@ const BirthdayCard = () => {
 
   useEffect(() => {
     if (isReturning) {
-      // After return animation, reset the card
       const resetTimeout = setTimeout(() => {
         resetCard();
-        // Start the cycle again
         setTimeout(() => setIsOpen(true), 1000);
       }, 1500);
 
@@ -205,7 +208,7 @@ May His grace continue to shine through you, touching the lives of everyone arou
         {[...Array(5)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-8 h-8 bg-pink-200 rounded-full opacity-50"
+            className="absolute w-6 md:w-8 h-6 md:h-8 bg-pink-200 rounded-full opacity-50"
             animate={{
               x: [0, Math.random() * 100, 0],
               y: [0, Math.random() * 100, 0],
@@ -223,7 +226,7 @@ May His grace continue to shine through you, touching the lives of everyone arou
         ))}
       </div>
 
-      <div className="fixed right-0 h-full pointer-events-none">
+      <div className="hidden md:block fixed right-0 h-full pointer-events-none">
         {[...Array(5)].map((_, i) => (
           <Balloon key={i} delay={i * 0.5} />
         ))}
@@ -236,7 +239,7 @@ May His grace continue to shine through you, touching the lives of everyone arou
       />
 
       <motion.div
-        className="relative w-full max-w-3xl aspect-[3/2] perspective"
+        className="relative w-full max-w-3xl min-h-[600px] md:aspect-[3/2] perspective"
         animate={
           isMail
             ? "mail"
@@ -251,26 +254,26 @@ May His grace continue to shine through you, touching the lives of everyone arou
       >
         <PaperPlaneWings />
 
-        <div className="absolute inset-0 bg-white rounded-xl shadow-2xl p-12 backface-hidden">
-          <div className="h-full flex flex-col items-center justify-center space-y-6">
+        <div className="absolute inset-0 bg-white rounded-xl shadow-2xl p-4 md:p-12 backface-hidden">
+          <div className="h-full flex flex-col items-center justify-center space-y-4 md:space-y-6">
             <img
               src={front}
               alt="Birthday Girl"
-              className="w-40 h-40 rounded-full border-4 border-pink-300"
+              className="w-32 md:w-40 h-32 md:h-40 rounded-full border-4 border-pink-300"
             />
-            <h1 className="text-4xl font-bold text-pink-600">
+            <h1 className="text-2xl md:text-4xl font-bold text-pink-600">
               Happy Birthday!
             </h1>
           </div>
         </div>
 
-        <div className="absolute inset-0 bg-white rounded-xl shadow-2xl p-12 backface-hidden rotate-y-180">
-          <div className="h-full grid grid-cols-2 gap-12">
-            <div className="flex flex-col justify-center space-y-6">
-              <h2 className="text-3xl font-semibold text-pink-600">
+        <div className="absolute inset-0 bg-white rounded-xl shadow-2xl p-4 md:p-12 backface-hidden rotate-y-180">
+          <div className="h-full flex flex-col space-y-6 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
+            <div className="flex flex-col justify-start space-y-4 md:space-y-6">
+              <h2 className="text-2xl md:text-3xl font-semibold text-pink-600">
                 Dear Britah👧,
               </h2>
-              <p className="text-gray-700 leading-relaxed text-lg">
+              <div className="text-gray-700 leading-relaxed text-base md:text-lg">
                 {isReturning ? (
                   message
                 ) : (
@@ -279,15 +282,15 @@ May His grace continue to shine through you, touching the lives of everyone arou
                     onComplete={() => setIsTypingComplete(true)}
                   />
                 )}
-              </p>
+              </div>
             </div>
-            <div className="flex flex-col items-center justify-center space-y-6">
+            <div className="flex flex-col items-center justify-start space-y-4 md:space-y-6">
               <img
                 src={back}
                 alt="Birthday Memories"
-                className="w-64 h-80 object-cover rounded-lg shadow-lg"
+                className="w-48 md:w-64 h-48 md:h-80 object-cover rounded-lg shadow-lg"
               />
-              <p className="text-gray-600 italic text-lg text-center">
+              <p className="text-gray-600 italic text-base md:text-lg text-center">
                 Happy Birthday and God bless you always! 🙏💖✨
               </p>
             </div>

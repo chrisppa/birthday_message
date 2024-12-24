@@ -1,4 +1,3 @@
-// App.tsx
 import { useEffect, useState, useRef } from "react";
 import Confetti from "react-confetti";
 import { motion } from "framer-motion";
@@ -6,12 +5,10 @@ import front from "../assets/file.jpeg";
 import back from "../assets/back.jpeg";
 import audiofile from "../assets/praise.mp3";
 
-// Types
 interface BalloonProps {
   delay: number;
 }
 
-// Balloon Component
 const Balloon: React.FC<BalloonProps> = ({ delay }) => (
   <motion.div
     className="absolute w-16 h-20"
@@ -38,7 +35,6 @@ const Balloon: React.FC<BalloonProps> = ({ delay }) => (
   </motion.div>
 );
 
-// TypewriterText Component
 const TypewriterText = ({
   text,
   onComplete,
@@ -69,7 +65,9 @@ const TypewriterText = ({
 
   return (
     <div className="relative inline-block">
-      <span className="font-handwriting text-base md:text-lg">{displayText}</span>
+      <span className="font-handwriting text-base md:text-lg">
+        {displayText}
+      </span>
       {!isComplete && (
         <span className="inline-block ml-1 animate-bounce">✍️</span>
       )}
@@ -82,13 +80,13 @@ const TypewriterText = ({
   );
 };
 
-// Main BirthdayCard Component
 const BirthdayCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMail, setIsMail] = useState(false);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
   const [isReturning, setIsReturning] = useState(false);
-  const [audio] = useState(new Audio(audiofile));
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const resetCard = () => {
     setIsTypingComplete(false);
@@ -98,19 +96,85 @@ const BirthdayCard = () => {
   };
 
   useEffect(() => {
+    // Create audio element
+    audioRef.current = new Audio(audiofile);
+    audioRef.current.loop = true;
+
     const startAnimation = () => {
       setTimeout(() => setIsOpen(true), 3000);
     };
 
     startAnimation();
-    audio.loop = true;
-    audio.play().catch((e) => console.log("Audio playback failed:", e));
 
+    // Clean up on component unmount
     return () => {
-      audio.pause();
-      audio.currentTime = 0;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
     };
-  }, [audio]);
+  }, []);
+
+  // Function to handle audio play/pause
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current
+          .play()
+          .catch((e) => console.log("Audio playback failed:", e));
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  // Audio control component
+  const AudioControl = () => (
+    <button
+      onClick={toggleAudio}
+      className="fixed bottom-4 right-4 z-50 bg-pink-500 hover:bg-pink-600 text-white rounded-full p-3 shadow-lg transition-colors duration-200"
+      aria-label={isPlaying ? "Pause Music" : "Play Music"}
+    >
+      {isPlaying ? (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M10 9v6m4-6v6"
+          />
+        </svg>
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      )}
+    </button>
+  );
 
   useEffect(() => {
     if (isTypingComplete) {
@@ -204,6 +268,8 @@ May His grace continue to shine through you, touching the lives of everyone arou
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 to-purple-200 flex items-center justify-center p-4 overflow-hidden">
+      <AudioControl />
+
       <div className="fixed inset-0 pointer-events-none">
         {[...Array(5)].map((_, i) => (
           <motion.div
